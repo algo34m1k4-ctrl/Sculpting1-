@@ -1,0 +1,66 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class NpcScript : MonoBehaviour
+{
+    public int level = 1;              // Уровень NPC
+    public float health = 100f;        // Здоровье NPC
+    public float speed = 5f;           // Скорость движения NPC
+    public bool moveForward = true;    // Флаг направления движения (true - вперед, false - назад)
+    public float boundaryZ = 10f;      // Границы пространства вдоль оси Z
+
+    private void Awake() {         
+        AddHealthAndLevel();           // Добавляем здоровье и уровень сразу при старте игры
+    }
+    
+    // Метод добавления здоровья и уровня
+    private void AddHealthAndLevel() {
+        health += 50f * level;         // Увеличиваем здоровье в зависимости от текущего уровня
+        level++;                       // Повышаем уровень NPC
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        Debug.Log("Здоровье NPC: " + health); // Однократный вывод значения здоровья в консоль для проверки
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        // Перемещаемся вперед или назад в зависимости от флага moveForward
+        if (moveForward)
+            MoveForward();
+        else
+            MoveBackward();
+            
+        CheckBoundaries(); // Проверяем границы и меняем направление при необходимости
+    }
+
+    // Движение вперед
+    private void MoveForward()
+    {
+        Vector3 newPosition = transform.position;
+        newPosition.z += speed * Time.deltaTime;
+        transform.position = newPosition;
+    }
+
+    // Движение назад
+    private void MoveBackward()
+    {
+        Vector3 newPosition = transform.position;
+        newPosition.z -= speed * Time.deltaTime;
+        transform.position = newPosition;
+    }
+
+    // Проверка границ движения
+    private void CheckBoundaries()
+    {
+        if ((transform.position.z >= boundaryZ && moveForward) || 
+            (transform.position.z <= -boundaryZ && !moveForward))
+        {
+            moveForward = !moveForward; // Переключаем направление движения
+        }
+    }
+}
